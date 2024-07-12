@@ -1,15 +1,52 @@
-import { useState } from 'react'
+import { useReducer, useState } from 'react'
+import { CartContext } from './store';
+
 import Navbar from './components/Navbar'
 import Products from './components/Products';
 import Cart from './components/Cart';
 
 
 
+
+
 function App() {
+  const cartReducer = useReducer((state, action) => {
+    const cartList = [...state.cartList]
+    const index = cartList.findIndex((item) => item.id === action.payload.id)
+    console.log(action)
+    switch(action.type) {
+      case 'ADD_TO_CART' :
+        if(index === -1){
+          cartList.push(action.payload)
+        } else {
+          cartList[index].quantity += action.payload.quantity
+        }
+        return {
+          ...state,
+          cartList
+        }
+      case 'CHANGE_CART_QUANTITY' :
+        cartList[index].quantity = action.payload.quantity
+        return {
+          ...state,
+          cartList
+        }
+      case 'REMOVE_CART_ITEM' :
+        cartList.splice(index, 1)
+        return {
+          ...state,
+          cartList
+        }
+      default:
+        return state
+    }
+  }, {
+    cartList: []
+  })
+
   return (
-    <div className='App'>
+    <CartContext.Provider value={cartReducer}>
       <Navbar />
-      
       <div className="container mt-4">
         <div className="row">
           <div className="col-md-7">
@@ -20,7 +57,8 @@ function App() {
           </div>
         </div>
       </div>
-    </div>
+    </CartContext.Provider>
+      
   )
 }
 

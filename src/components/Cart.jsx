@@ -1,26 +1,64 @@
+import { useContext } from "react"
+import { CartContext } from "../store"
+
+
 function Cart(){
+  const [state, dispatch] = useContext(CartContext)
+  
   return (<div className="bg-light p-3">
     <table className="table align-middle">
       <tbody>
-        <tr>
-          <td>
-            <a href=''></a>
-          </td>
-          <td>
-            <img src="https://images.unsplash.com/photo-1476887334197-56adbf254e1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZGVzc2VydHxlbnwwfHwwfHx8MA%3D%3D" alt="" className='table-img' />
-          </td>
-          <td>
-            全蔬食健康倉
-            <br />
-            <small className='text-mute'>NT$ 220</small>
-          </td>
-          <td>
-            <select name="" id="" className="form-select"></select>
-          </td>
-          <td className="text-end">
-            $440
-          </td>
-        </tr>
+        {
+          state.cartList.map((item) => {
+            return (<tr key={item.id}>
+              <td>
+                <button type='button' className='btn' onClick={
+                  () => {
+                    dispatch({
+                      type: 'REMOVE_CART_ITEM',
+                        payload: {
+                          ...item
+                        }
+                    }) 
+
+                }}>x</button>
+              </td>
+              <td>
+                <img src={item.img} alt="" className='table-img' />
+              </td>
+              <td>
+                {item.title}
+                <br />
+                <small className='text-mute'>NT$ {item.price}</small>
+              </td>
+              <td>
+                <select name="" id="" className="form-select" 
+                  value={item.quantity} 
+                  onChange={(e) => {
+                  e.preventDefault()
+                  const quantity = parseInt(e.target.value)
+                  dispatch({
+                    type: 'CHANGE_CART_QUANTITY',
+                    payload: {
+                      ...item,
+                      quantity
+                    }
+                  })
+                }}>
+                  {[...Array(20)].map((_, i) => {
+                    return (<option value={i+1} key={i}> {i+1} </option>  
+                    )
+                  })}
+                </select>
+              </td>
+              <td className="text-end">
+                NT$ {item.quantity * item.price}
+              </td>
+            </tr>
+            )
+          })
+        }
+        
       </tbody>
       <tfoot>
         <tr>
