@@ -21,21 +21,25 @@ function App() {
         } else {
           cartList[index].quantity += action.payload.quantity
         }
+
         return {
           ...state,
-          cartList
+          cartList,
+          total: calculateTotalPrice(cartList)
         }
       case 'CHANGE_CART_QUANTITY' :
         cartList[index].quantity = action.payload.quantity
         return {
           ...state,
-          cartList
+          cartList,
+          total: calculateTotalPrice(cartList)
         }
       case 'REMOVE_CART_ITEM' :
         cartList.splice(index, 1)
         return {
           ...state,
-          cartList
+          cartList,
+          total: calculateTotalPrice(cartList)
         }
       default:
         return state
@@ -60,6 +64,11 @@ function App() {
     </CartContext.Provider>
       
   )
+}
+
+function calculateTotalPrice(cartList) {
+  return cartList.map((item) => item.quantity * item.price)
+    .reduce((a, b) => a + b, 0);
 }
 
 export default App

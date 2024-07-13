@@ -62,7 +62,7 @@ function Cart(){
       </tbody>
       <tfoot>
         <tr>
-          <td className="text-end" colSpan={5}>總金額 NT$ 440</td>
+          <td className="text-end" colSpan={5}>總金額 NT$ {state.total || 0}</td>
         </tr>
       </tfoot>
     </table>
